@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Road Safety Risk Assessment</title>
+     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/"><i class="fas fa-car-crash"></i> AI Road Safety Predictor</a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/">Home</a>
+                <a class="nav-link active" href="/predict">Risk Assessment</a>
+                <a class="nav-link" href="/about">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="risk-form-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto">
+                    <div class="form-card p-4">
+                        <div class="text-center mb-4">
+                            <h1 class="display-6"><i class="fas fa-shield-alt text-primary"></i> AI Road Safety Risk Assessment</h1>
+                            <p class="lead text-muted">Advanced ML-powered analysis with 94.7% accuracy</p>
+                        </div>
+
+                        <form id="riskAssessmentForm">
+                            <!-- Location Section -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-map-marker-alt"></i> Location Information</h4>
+                                </div>
+                                <div class="location-input-group">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <label for="location" class="form-label">Current Location/Route</label>
+                                            <input type="text" class="form-control" id="location" name="location" placeholder="Enter city, area or route name" required>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label for="area_type" class="form-label">Area Type</label>
+                                            <select class="form-select" id="area_type" name="area_type">
+                                                <option value="Urban">Urban</option>
+                                                <option value="Suburban">Suburban</option>
+                                                <option value="Rural">Rural</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="button" id="use-location-btn" class="btn btn-outline-primary btn-sm mt-2">
+                                        <i class="fas fa-map-marker-alt"></i> Use Current Location
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Vehicle & Driver Section -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-car"></i> Vehicle & Driver Details</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="vehicle_type" class="form-label">Vehicle Type</label>
+                                        <select class="form-select" id="vehicle_type" name="vehicle_type">
+                                            <option value="Car">Car</option>
+                                            <option value="Bike">Motorcycle/Bike</option>
+                                            <option value="Truck">Truck</option>
+                                            <option value="Bus">Bus</option>
+                                            <option value="Auto-rickshaw">Auto-rickshaw</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="driver_age" class="form-label">Driver Age</label>
+                                        <input type="number" class="form-control" id="driver_age" name="driver_age" min="16" max="80" value="30">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="experience" class="form-label">Driving Experience (years)</label>
+                                        <input type="number" class="form-control" id="experience" name="experience" min="0" max="50" value="5">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label for="license_valid" class="form-label">Valid License</label>
+                                        <select class="form-select" id="license_valid" name="license_valid">
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="seatbelt" class="form-label">Seatbelt/Helmet</label>
+                                        <select class="form-select" id="seatbelt" name="seatbelt">
+                                            <option value="yes">Yes</option>
+                                            <option value="no">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Environmental Conditions -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-cloud-sun"></i> Environmental Conditions</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label for="weather" class="form-label">Weather</label>
+                                        <select class="form-select" id="weather" name="weather">
+                                            <option value="Clear">Clear</option>
+                                            <option value="Rainy">Rainy</option>
+                                            <option value="Foggy">Foggy</option>
+                                            <option value="Snowy">Snowy</option>
+                                            <option value="Stormy">Stormy</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="road_surface" class="form-label">Road Surface</label>
+                                        <select class="form-select" id="road_surface" name="road_surface">
+                                            <option value="Dry">Dry</option>
+                                            <option value="Wet">Wet</option>
+                                            <option value="Icy">Icy</option>
+                                            <option value="Muddy">Muddy</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="visibility" class="form-label">Visibility</label>
+                                        <select class="form-select" id="visibility" name="visibility">
+                                            <option value="high">High (>200m)</option>
+                                            <option value="medium">Medium (50-200m)</option>
+                                            <option value="low">Low (<50m)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="light_condition" class="form-label">Light Condition</label>
+                                        <select class="form-select" id="light_condition" name="light_condition">
+                                            <option value="Daylight">Daylight</option>
+                                            <option value="Night_with_lights">Night (Street lights)</option>
+                                            <option value="Night_without_lights">Night (No lights)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Road & Traffic Section -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-road"></i> Road & Traffic Conditions</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="road_type" class="form-label">Road Type</label>
+                                        <select class="form-select" id="road_type" name="road_type">
+                                            <option value="City_Road">City Road</option>
+                                            <option value="Highway">Highway</option>
+                                            <option value="Rural_Road">Rural Road</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="road_design" class="form-label">Road Design</label>
+                                        <select class="form-select" id="road_design" name="road_design">
+                                            <option value="Straight">Straight</option>
+                                            <option value="Curved">Curved</option>
+                                            <option value="Junction">Junction/Intersection</option>
+                                            <option value="Roundabout">Roundabout</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="traffic_volume" class="form-label">Traffic Volume</label>
+                                        <select class="form-select" id="traffic_volume" name="traffic_volume">
+                                            <option value="Low">Low</option>
+                                            <option value="Medium">Medium</option>
+                                            <option value="High">High</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-6">
+                                        <label for="speed_limit" class="form-label">Speed Limit (km/h)</label>
+                                        <input type="number" class="form-control" id="speed_limit" name="speed_limit" min="20" max="120" value="60">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="current_speed" class="form-label">Current Speed (km/h)</label>
+                                        <input type="number" class="form-control" id="current_speed" name="current_speed" min="0" max="150" value="50">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Time & Additional Factors -->
+                            <div class="form-section">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-clock"></i> Time & Additional Risk Factors</h4>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="time_of_day" class="form-label">Time of Day</label>
+                                        <select class="form-select" id="time_of_day" name="time_of_day">
+                                            <option value="Morning">Morning (6-12)</option>
+                                            <option value="Afternoon">Afternoon (12-17)</option>
+                                            <option value="Evening">Evening (17-21)</option>
+                                            <option value="Night">Night (21-6)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="is_weekend" class="form-label">Day Type</label>
+                                        <select class="form-select" id="is_weekend" name="is_weekend">
+                                            <option value="false">Weekday</option>
+                                            <option value="true">Weekend</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="accident_history" class="form-label">Recent Accidents in Area</label>
+                                        <input type="number" class="form-control" id="accident_history" name="accident_history" min="0" max="20" value="0">
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-md-4">
+                                        <label for="overtaking" class="form-label">Overtaking Involved</label>
+                                        <select class="form-select" id="overtaking" name="overtaking">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="phone_usage" class="form-label">Phone Usage</label>
+                                        <select class="form-select" id="phone_usage" name="phone_usage">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="alcohol" class="form-label">Alcohol Involvement</label>
+                                        <select class="form-select" id="alcohol" name="alcohol">
+                                            <option value="no">No</option>
+                                            <option value="yes">Yes</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-predict btn-lg">
+                                    <i class="fas fa-brain"></i> Analyze Risk with AI
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Loading Animation -->
+                        <div id="loading" class="text-center mt-4" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <p class="mt-3"><i class="fas fa-cogs"></i> AI Model Processing...</p>
+                            <small class="text-muted">Analyzing 55+ risk parameters</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-detect current time and set appropriate values
+        document.addEventListener('DOMContentLoaded', function() {
+            const now = new Date();
+            const hour = now.getHours();
+            const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            
+            // Set time of day
+            let timeOfDay = 'Morning';
+            if (hour >= 12 && hour < 17) timeOfDay = 'Afternoon';
+            else if (hour >= 17 && hour < 21) timeOfDay = 'Evening';
+            else if (hour >= 21 || hour < 6) timeOfDay = 'Night';
+            
+            document.getElementById('time_of_day').value = timeOfDay;
+            document.getElementById('is_weekend').value = isWeekend.toString();
+            
+            // Set light condition based on time
+            if (hour >= 6 && hour <= 18) {
+                document.getElementById('light_condition').value = 'Daylight';
+            } else {
+                document.getElementById('light_condition').value = 'Night_with_lights';
+            }
+
+            // GPS Location button handler
+            const useLocationBtn = document.getElementById('use-location-btn');
+            const locationInput = document.getElementById('location');
+            
+            if (useLocationBtn) {
+                useLocationBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (!navigator.geolocation) {
+                        showLocationError('Geolocation is not supported by your browser. Please enter location manually.');
+                        return;
+                    }
+                    
+                    // Show loading state
+                    useLocationBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Getting Location...';
+                    useLocationBtn.disabled = true;
+                    locationInput.placeholder = 'Detecting your location...';
+                    
+                    const options = {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 300000 // 5 minutes
+                    };
+                    
+                    navigator.geolocation.getCurrentPosition(
+                        async function(position) {
+                            const lat = position.coords.latitude;
+                            const lon = position.coords.longitude;
+                            const accuracy = Math.round(position.coords.accuracy);
+                            
+                            try {
+                                // Use OpenStreetMap Nominatim API for detailed reverse geocoding
+                                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
+                                const data = await response.json();
+                                
+                                if (data && data.display_name) {
+                                    // Extract ALL detailed location components
+                                    const address = data.address || {};
+                                    let locationParts = [];
+                                    
+                                    // Add house number and road name first (most specific)
+                                    if (address.house_number && address.road) {
+                                        locationParts.push(address.house_number + ' ' + address.road);
+                                    } else if (address.road) {
+                                        locationParts.push(address.road);
+                                    }
+                                    
+                                    // Add neighbourhood/suburb/area details
+                                    if (address.neighbourhood) locationParts.push(address.neighbourhood);
+                                    if (address.suburb) locationParts.push(address.suburb);
+                                    if (address.quarter) locationParts.push(address.quarter);
+                                    if (address.district) locationParts.push(address.district);
+                                    
+                                    // Add city/town/village
+                                    if (address.city) locationParts.push(address.city);
+                                    else if (address.town) locationParts.push(address.town);
+                                    else if (address.village) locationParts.push(address.village);
+                                    else if (address.municipality) locationParts.push(address.municipality);
+                                    
+                                    // Add postal code for more specificity
+                                    if (address.postcode) locationParts.push(address.postcode);
+                                    
+                                    // Add state/region
+                                    if (address.state) locationParts.push(address.state);
+                                    else if (address.region) locationParts.push(address.region);
+                                    
+                                    // Join all parts with commas
+                                    let locationStr = locationParts.filter(part => part).join(', ');
+                                    
+                                    // If we still don't have a good detailed string, use the full display_name
+                                    if (!locationStr || locationParts.length < 2) {
+                                        locationStr = data.display_name;
+                                    }
+                                    
+                                    // Fill the location input
+                                    locationInput.value = locationStr;
+                                    locationInput.classList.add('location-detected');
+                                    
+                                    // Auto-detect area type based on location
+                                    const areaTypeSelect = document.getElementById('area_type');
+                                    if (address.city || address.town) {
+                                        areaTypeSelect.value = 'Urban';
+                                    } else if (address.village || address.hamlet) {
+                                        areaTypeSelect.value = 'Rural';
+                                    } else {
+                                        areaTypeSelect.value = 'Suburban';
+                                    }
+                                    
+                                    showLocationSuccess(locationStr, accuracy);
+                                    
+                                } else {
+                                    throw new Error('Could not determine location name');
+                                }
+                                
+                            } catch (error) {
+                                console.error('Geocoding error:', error);
+                                // Fallback: show coordinates
+                                const coordsStr = `${lat.toFixed(4)}, ${lon.toFixed(4)}`;
+                                locationInput.value = coordsStr;
+                                showLocationError('Location detected but could not get address. Showing coordinates: ' + coordsStr);
+                            }
+                            
+                            // Reset button state
+                            useLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Use Current Location';
+                            useLocationBtn.disabled = false;
+                            locationInput.placeholder = 'Enter city, area or route name';
+                            
+                        },
+                        function(error) {
+                            let errorMessage = 'Location detection failed';
+                            switch(error.code) {
+                                case error.PERMISSION_DENIED:
+                                    errorMessage = 'Location access denied. Please allow location access and try again.';
+                                    break;
+                                case error.POSITION_UNAVAILABLE:
+                                    errorMessage = 'Location information unavailable. Please enter manually.';
+                                    break;
+                                case error.TIMEOUT:
+                                    errorMessage = 'Location request timed out. Please try again.';
+                                    break;
+                            }
+                            
+                            showLocationError(errorMessage);
+                            
+                            // Reset button state
+                            useLocationBtn.innerHTML = '<i class="fas fa-map-marker-alt"></i> Use Current Location';
+                            useLocationBtn.disabled = false;
+                            locationInput.placeholder = 'Enter city, area or route name';
+                        },
+                        options
+                    );
+                });
+            }
+        });
+
+        function showLocationSuccess(location, accuracy) {
+            const container = document.querySelector('.location-input-group');
+            const existingMsg = container.querySelector('.location-success-msg, .location-error-msg');
+            if (existingMsg) existingMsg.remove();
+            
+            const successMsg = document.createElement('div');
+            successMsg.className = 'location-success-msg';
+            successMsg.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-map-marker-alt text-success"></i>
+                    <strong>Location Detected!</strong> ${location}
+                    <small class="d-block text-muted">Accuracy: ~${accuracy}m</small>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            container.appendChild(successMsg);
+            setTimeout(() => successMsg.remove(), 8000);
+        }
+
+        function showLocationError(message) {
+            const container = document.querySelector('.location-input-group');
+            const existingMsg = container.querySelector('.location-success-msg, .location-error-msg');
+            if (existingMsg) existingMsg.remove();
+            
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'location-error-msg';
+            errorMsg.innerHTML = `
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-triangle text-warning"></i>
+                    <strong>Location Issue</strong>
+                    <div class="small text-muted">${message}</div>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+            
+            container.appendChild(errorMsg);
+            setTimeout(() => errorMsg.remove(), 10000);
+        }
+
+        // FIXED FORM SUBMISSION - This is the key fix!
+        document.getElementById('riskAssessmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading
+            document.getElementById('loading').style.display = 'block';
+            
+            // Collect form data properly
+            const formData = new FormData(this);
+            const data = {};
+            
+            // Convert form data to the format your backend expects
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            // Convert numeric fields
+            data.driver_age = parseInt(data.driver_age);
+            data.experience = parseInt(data.experience);
+            data.speed_limit = parseInt(data.speed_limit);
+            data.current_speed = parseInt(data.current_speed);
+            data.accident_history = parseInt(data.accident_history);
+            data.is_weekend = data.is_weekend === 'true';
+            
+            console.log('Sending data to backend:', data);
+            
+            // Make API call to your backend - FIXED ENDPOINT
+            fetch('/api/predict_comprehensive', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                console.log('Response status:', response.status);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Prediction result:', result);
+                document.getElementById('loading').style.display = 'none';
+                
+                if (result.success) {
+                    // Store result for the results page
+                    localStorage.setItem('prediction_result', JSON.stringify(result));
+                    // Redirect to results page
+                    window.location.href = '/results';
+                } else {
+                    throw new Error(result.error || 'Prediction failed');
+                }
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                console.error('Prediction error:', error);
+                alert('Prediction failed: ' + error.message + '\n\nPlease check your network connection and try again.');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -209,9 +209,10 @@ def create_app(config_name='production'):
     
     return app
 
+# Top-level app so gunicorn can find it (gunicorn run:app)
+app = create_app()
+
 if __name__ == '__main__':
-    app = create_app()
-    
     print("🌟 ML Prediction System Ready!")
     print("🔗 Access Points:")
     print("   📱 Web Interface: http://localhost:5000")
